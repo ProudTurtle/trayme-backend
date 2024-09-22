@@ -7,7 +7,7 @@ import pl.infirsoft.trayme.dto.RecommendationDto
 @Table(name = "recommendation")
 class Recommendation(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int,
     private val name: String,
     private val who: String,

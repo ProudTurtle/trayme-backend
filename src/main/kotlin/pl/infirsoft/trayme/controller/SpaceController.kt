@@ -6,14 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import pl.infirsoft.trayme.domain.Space
 import pl.infirsoft.trayme.dto.SpaceDto
-import pl.infirsoft.trayme.service.NoteService
 import pl.infirsoft.trayme.service.SpaceService
 
 @RestController
 @RequestMapping("/spaces")
 class SpaceController(
-    private val spaceService: SpaceService,
-    private val noteService: NoteService
+    private val spaceService: SpaceService
 ) {
 
     @GetMapping

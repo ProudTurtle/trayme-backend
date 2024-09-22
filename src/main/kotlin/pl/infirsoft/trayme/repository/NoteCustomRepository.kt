@@ -1,8 +1,8 @@
 package pl.infirsoft.trayme.repository
 
-import org.springframework.stereotype.Repository
 import pl.infirsoft.trayme.domain.Note
 
-interface NoteCustomRepository{
-    fun findBy(id: Int): List<Note>
+interface NoteCustomRepository {
+    fun requireBy(id: Int): Note
+    fun findBy(id: Int): Note?
 }
