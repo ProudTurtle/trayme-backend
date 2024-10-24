@@ -21,8 +21,8 @@ class NoteService(
         val space = spaceRepository.requireBy(1)
         val note = noteRepository.requireBy(noteId)
 
-        payload.title?.let { note.setTitle(it) }
-        payload.content?.let { note.setContent(it) }
+        payload.title.let { note.setTitle(it) }
+        payload.content.let { note.setContent(it) }
         return noteRepository.save(payload.toEntity(space))
     }
 }
