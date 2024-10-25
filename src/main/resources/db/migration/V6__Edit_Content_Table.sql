@@ -1,0 +1,5 @@
+ALTER TABLE content
+ADD COLUMN title VARCHAR(255), 
+ADD COLUMN update_at DATETIME, 
+ADD COLUMN content TEXT;
+ALTER TABLE content ADD COLUMN content_type VARCHAR(255);

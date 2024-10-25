@@ -1,19 +1,17 @@
 package pl.infirsoft.trayme.domain;
 
-import jakarta.persistence.*
+import jakarta.persistence.DiscriminatorValue
+import jakarta.persistence.Entity
 import pl.infirsoft.trayme.dto.RecommendationDto
 
 @Entity
-@Table(name = "recommendation")
+@DiscriminatorValue("recommendation")
 class Recommendation(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int,
     private val name: String,
     private val who: String,
     private val type: String
-) {
+) : Content() {
     fun toDto(): RecommendationDto {
-        return RecommendationDto(id, name, who, type)
+        return RecommendationDto(name, who, type)
     }
 }

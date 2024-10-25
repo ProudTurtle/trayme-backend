@@ -1,12 +1,13 @@
 package pl.infirsoft.trayme.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import pl.infirsoft.trayme.domain.*
+import pl.infirsoft.trayme.domain.QSpace
+import pl.infirsoft.trayme.domain.Space
 import pl.infirsoft.trayme.exception.SpaceNotFoundException
 
 class SpaceCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : SpaceCustomRepository {
 
-    override fun getEntitiesBy(id: Int): List<*> {
+    override fun getEntitiesBy(id: Int) {
         val root = QSpace.space
 
         val spaceType = queryFactory
@@ -15,18 +16,18 @@ class SpaceCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : Spa
             .where(root.id.eq(id))
             .fetchOne()
 
-        val results = when (spaceType) {
-            "notes" -> queryFactory
-                .selectFrom(QNote.note)
-                .fetch().map(Note::toDto)
-
-            "recommendations" -> queryFactory
-                .selectFrom(QRecommendation.recommendation)
-                .fetch().map(Recommendation::toDto)
-
-            else -> emptyList()
-        }
-        return results
+//        val results = when (spaceType) {
+//            "notes" -> queryFactory
+//                .selectFrom(QNote.note)
+//                .fetch().map(Note::toDto)
+//
+//            "recommendations" -> queryFactory
+//                .selectFrom(QRecommendation.recommendation)
+//                .fetch().map(Recommendation::toDto)
+//
+//            else -> emptyList()
+//        }
+//        return results
     }
 
     override fun requireBy(id: Int): Space {

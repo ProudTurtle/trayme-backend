@@ -9,11 +9,9 @@ import java.security.SecureRandom
 class RegisterService(
     private val userRepository: UserRepository
 ) {
-
     fun generatePassword(): String {
         val charPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&*()"
         val secureRandom = SecureRandom()
-
 
         val password = (5..12)
             .map { secureRandom.nextInt(charPool.length) }

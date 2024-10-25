@@ -5,4 +5,4 @@ import org.springframework.stereotype.Repository
 import pl.infirsoft.trayme.domain.User
 
 @Repository
-interface UserRepository : JpaRepository<User, Int>, SpaceCustomRepository
+interface UserRepository : JpaRepository<User, Int>, UserCustomRepository
