@@ -7,11 +7,23 @@ import pl.infirsoft.trayme.dto.RecommendationDto
 @Entity
 @DiscriminatorValue("recommendation")
 class Recommendation(
-    private val name: String,
-    private val who: String,
-    private val type: String
+    private var name: String,
+    private var who: String,
+    private var type: String
 ) : Content() {
     override fun toDto(): RecommendationDto {
         return RecommendationDto(name, who, type)
+    }
+
+    fun setName(newName: String) {
+        this.name = newName
+    }
+
+    fun setWho(newWho: String) {
+        this.who = newWho
+    }
+
+    fun setType(newType: String) {
+        this.type = newType
     }
 }

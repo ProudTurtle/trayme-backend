@@ -48,4 +48,15 @@ class SpaceCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : Spa
 
         return queryFactory.selectFrom(root).where(root.user.password.eq(userPassword)).fetch()
     }
+
+    override fun findByContentAndUserPassword(contentId: Int, userPassword: String): Space? {
+        val root = QSpace.space
+
+        return queryFactory.selectFrom(root)
+            .where(root.content.id.eq(contentId).and(root.user.password.eq(userPassword))).fetchOne()
+    }
+
+    override fun requireByContentIdAnsUserPassword(contentId: Int, userPassword: String): Space {
+        return findByContentAndUserPassword(contentId, userPassword) ?: throw SpaceNotFoundException(contentId)
+    }
 }

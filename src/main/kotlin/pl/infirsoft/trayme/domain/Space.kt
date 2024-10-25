@@ -12,7 +12,7 @@ class Space(
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private val user: User,
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "content_id")
     private val content: Content
 ) {
