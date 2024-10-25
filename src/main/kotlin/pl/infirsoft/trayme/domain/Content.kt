@@ -10,4 +10,6 @@ abstract class Content(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     open val id: Int? = null
-)
+) {
+    abstract fun toDto(): Any
+}

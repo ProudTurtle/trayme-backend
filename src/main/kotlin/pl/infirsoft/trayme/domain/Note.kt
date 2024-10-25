@@ -13,7 +13,7 @@ class Note(
     private var content: String,
 ) : Content() {
 
-    fun toDto(): NoteDto {
+    override fun toDto(): NoteDto {
         return NoteDto(id ?: 0, title, updateAt, content)
     }
 

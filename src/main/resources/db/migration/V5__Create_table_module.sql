@@ -39,26 +39,4 @@ CREATE TABLE space (
     FOREIGN KEY (content_id) REFERENCES content(id) ON DELETE SET NULL
 );
 
--- Create 'note' table extending 'content'
-CREATE TABLE note (
-    id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    update_at TIMESTAMP NOT NULL,
-    content TEXT NOT NULL,
-    space_id INT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (id) REFERENCES content(id) ON DELETE CASCADE,
-    FOREIGN KEY (space_id) REFERENCES space(id) ON DELETE SET NULL
-);
-
--- Create 'recommendation' table extending 'content'
-CREATE TABLE recommendation (
-    id INT NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    who VARCHAR(255) NOT NULL,
-    type VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (id) REFERENCES content(id) ON DELETE CASCADE
-);
-
 

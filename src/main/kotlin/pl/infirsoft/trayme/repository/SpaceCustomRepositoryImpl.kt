@@ -42,4 +42,10 @@ class SpaceCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : Spa
             .where(root.id.eq(id))
             .fetchOne()
     }
+
+    override fun findByUserPassword(userPassword: String): List<Space> {
+        val root = QSpace.space
+
+        return queryFactory.selectFrom(root).where(root.user.password.eq(userPassword)).fetch()
+    }
 }

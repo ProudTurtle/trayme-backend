@@ -8,7 +8,7 @@ import pl.infirsoft.trayme.repository.SpaceRepository
 class SpaceService(private val repository: SpaceRepository) {
 
     fun getAllSpaces(userPassword: String): List<Space> {
-        return repository.findAll()
+        return repository.findByUserPassword(userPassword)
     }
 
 //    fun getByEntitiesBy(id: Int): List<*>{

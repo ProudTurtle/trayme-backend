@@ -29,4 +29,10 @@ class NoteController(
     fun updateNote(@RequestBody notePayload: NotePayload, @PathVariable noteId: Int): NoteDto {
         return noteService.updateNote(notePayload, noteId).toDto()
     }
+
+    @DeleteMapping("{noteId}")
+    @Operation(summary = "Notatki.Usuwanie", description = "Usuwa wskazaną notatkę")
+    fun deleteNote(@PathVariable noteId: Int, @RequestHeader userPassword: String) {
+        noteService.deleteNote(noteId, userPassword)
+    }
 }

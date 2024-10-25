@@ -1,6 +1,7 @@
 package pl.infirsoft.trayme.domain
 
 import jakarta.persistence.*
+import pl.infirsoft.trayme.dto.SpaceDto
 
 @Entity
 @Table(name = "space")
@@ -19,7 +20,7 @@ class Space(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null
 
-//    fun toDto(): SpaceDto {
-//        return SpaceDto(module, title, icon)
-//    }
+    fun toDto(): SpaceDto {
+        return SpaceDto(module.toDto(), content.toDto())
+    }
 }

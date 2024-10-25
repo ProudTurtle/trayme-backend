@@ -11,7 +11,7 @@ class Recommendation(
     private val who: String,
     private val type: String
 ) : Content() {
-    fun toDto(): RecommendationDto {
+    override fun toDto(): RecommendationDto {
         return RecommendationDto(name, who, type)
     }
 }
