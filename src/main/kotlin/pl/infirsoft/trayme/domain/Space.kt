@@ -12,15 +12,19 @@ class Space(
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private val user: User,
-    @OneToOne(cascade = [CascadeType.REMOVE])
-    @JoinColumn(name = "content_id")
-    private val content: Content
+    private var name: String,
+    @OneToMany(mappedBy = "space", cascade = [CascadeType.REMOVE])
+    val contents: List<Content> = mutableListOf()
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null
 
     fun toDto(): SpaceDto {
-        return SpaceDto(module.toDto(), content.toDto())
+        return SpaceDto(name, module.toDto())
+    }
+
+    fun setName(newName: String) {
+        this.name = newName
     }
 }

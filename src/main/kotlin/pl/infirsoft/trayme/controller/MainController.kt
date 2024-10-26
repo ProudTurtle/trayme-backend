@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.nio.charset.StandardCharsets
 
 @RestController
-class TestController {
+class MainController {
 
-    @GetMapping("/")
+    @GetMapping("/", "")
     fun showBanner(): String {
         val bannerResource = ClassPathResource("banner.txt")
         val bannerStream = bannerResource.inputStream

@@ -2,46 +2,40 @@ package pl.infirsoft.trayme.service
 
 import org.springframework.stereotype.Service
 import pl.infirsoft.trayme.domain.Recommendation
-import pl.infirsoft.trayme.domain.Space
-import pl.infirsoft.trayme.exception.ModuleNotFoundException
 import pl.infirsoft.trayme.exception.NoteServiceException
 import pl.infirsoft.trayme.exception.SpaceNotFoundException
-import pl.infirsoft.trayme.exception.UserNotFoundException
-import pl.infirsoft.trayme.payload.RecomenndationPayload
-import pl.infirsoft.trayme.repository.ModuleRepository
-import pl.infirsoft.trayme.repository.RecomendationRepository
+import pl.infirsoft.trayme.payload.RecommendationPayload
+import pl.infirsoft.trayme.payload.RecommendationUpdatePayload
+import pl.infirsoft.trayme.repository.RecommendationRepository
 import pl.infirsoft.trayme.repository.SpaceRepository
-import pl.infirsoft.trayme.repository.UserRepository
 
 @Service
 class RecommendationService(
-    private val recommendationRepository: RecomendationRepository,
-    private val spaceRepository: SpaceRepository,
-    private val userRepository: UserRepository,
-    private val moduleRepository: ModuleRepository
+    private val recommendationRepository: RecommendationRepository,
+    private val spaceRepository: SpaceRepository
 ) {
 
-    fun createRecommendation(recommendationPayload: RecomenndationPayload, userPassword: String): Recommendation {
+    fun createRecommendation(recommendationPayload: RecommendationPayload, userPassword: String): Recommendation {
         return try {
-            val user = userRepository.requireBy(userPassword)
-            val module = moduleRepository.requireBy(6)
-            val recommendation = recommendationRepository.save(recommendationPayload.toEntity())
-            val space = Space(module, user, recommendation)
+            val space = spaceRepository.requireByIdIdAnsUserPassword(recommendationPayload.spaceId, userPassword)
+            val recommendation = recommendationRepository.save(recommendationPayload.toEntity(space))
             spaceRepository.save(space)
             recommendation
-        } catch (e: UserNotFoundException) {
-            throw NoteServiceException("User not found", e)
-        } catch (e: ModuleNotFoundException) {
-            throw NoteServiceException("Module not found", e)
+        } catch (e: SpaceNotFoundException) {
+            throw NoteServiceException("Space not found", e)
         }
     }
 
     fun getRecommendations(userPassword: String): List<Recommendation> {
-        return recommendationRepository.findNotesByUserPassword(userPassword)
+        return recommendationRepository.findRecommendationByUserPassword(userPassword)
     }
 
-    fun updateRecommendation(payload: RecomenndationPayload, noteId: Int): Recommendation {
-        val recommendation = recommendationRepository.requireBy(noteId)
+    fun updateRecommendation(
+        payload: RecommendationUpdatePayload,
+        recommendationId: Int,
+        userPassword: String
+    ): Recommendation {
+        val recommendation = recommendationRepository.requireBy(userPassword, recommendationId)
 
         payload.name.let { recommendation.setName(it) }
         payload.who.let { recommendation.setWho(it) }
@@ -49,12 +43,12 @@ class RecommendationService(
         return recommendationRepository.save(recommendation)
     }
 
-    fun deleteRecommendation(noteId: Int, userPassword: String) {
+    fun deleteRecommendation(recommendationId: Int, userPassword: String) {
         try {
-            val space = spaceRepository.requireByContentIdAnsUserPassword(noteId, userPassword)
-            spaceRepository.delete(space)
+            val recommendation = recommendationRepository.requireBy(userPassword, recommendationId)
+            recommendationRepository.delete(recommendation)
         } catch (e: SpaceNotFoundException) {
-            throw NoteServiceException("Space not found", e)
+            throw NoteServiceException("Recommendation not found", e)
         }
     }
 }

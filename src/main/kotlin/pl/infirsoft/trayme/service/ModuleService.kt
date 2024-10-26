@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import pl.infirsoft.trayme.domain.Module
 import pl.infirsoft.trayme.repository.ModuleRepository
 
+
 @Service
 class ModuleService(
     private val moduleRepository: ModuleRepository

@@ -4,8 +4,10 @@ import io.swagger.v3.oas.annotations.Operation
 import org.springframework.web.bind.annotation.*
 import pl.infirsoft.trayme.domain.Recommendation
 import pl.infirsoft.trayme.dto.RecommendationDto
-import pl.infirsoft.trayme.payload.RecomenndationPayload
+import pl.infirsoft.trayme.payload.RecommendationPayload
+import pl.infirsoft.trayme.payload.RecommendationUpdatePayload
 import pl.infirsoft.trayme.service.RecommendationService
+
 
 @RestController
 @RequestMapping("/recommendation")
@@ -14,31 +16,32 @@ class RecommendationController(
 ) {
     @GetMapping
     @Operation(summary = "Rekomendacje.Lista", description = "Zwraca listę rekomendacji dla danego userPassword")
-    fun getNotes(@RequestHeader userPassword: String): List<RecommendationDto> {
+    fun getNotes(@RequestHeader("X-User-Token") userPassword: String): List<RecommendationDto> {
         return recommendationService.getRecommendations(userPassword).map(Recommendation::toDto)
     }
 
-    @PostMapping("/create")
+    @PostMapping
     @Operation(summary = "Rekomendacje.Tworzenie", description = "Tworzy nową rekomendacje")
     fun createNote(
-        @RequestHeader userPassword: String,
-        @RequestBody recommendationPayload: RecomenndationPayload
+        @RequestHeader("X-User-Token") userPassword: String,
+        @RequestBody recommendationPayload: RecommendationPayload
     ): RecommendationDto {
         return recommendationService.createRecommendation(recommendationPayload, userPassword).toDto()
     }
 
-    @PutMapping("{recommendationId}/update")
+    @PutMapping("{recommendationId}")
     @Operation(summary = "Rekomendacje.Aktualizacja", description = "Aktualizuje rekomendacje")
     fun updateNote(
-        @RequestBody recommendationPayload: RecomenndationPayload,
+        @RequestHeader("X-User-Token") userPassword: String,
+        @RequestBody recommendationPayload: RecommendationUpdatePayload,
         @PathVariable noteId: Int
     ): RecommendationDto {
-        return recommendationService.updateRecommendation(recommendationPayload, noteId).toDto()
+        return recommendationService.updateRecommendation(recommendationPayload, noteId, userPassword).toDto()
     }
 
     @DeleteMapping("{recommendationId}")
     @Operation(summary = "Rekomendacje.Usuwanie", description = "Usuwa wskazaną rekomendacje")
-    fun deleteNote(@PathVariable recommendationId: Int, @RequestHeader userPassword: String) {
+    fun deleteNote(@PathVariable recommendationId: Int, @RequestHeader("X-User-Token") userPassword: String) {
         recommendationService.deleteRecommendation(recommendationId, userPassword)
     }
 }

@@ -2,16 +2,18 @@ package pl.infirsoft.trayme.domain
 
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
+import jakarta.persistence.Table
 import pl.infirsoft.trayme.dto.NoteDto
 import java.time.LocalDateTime
 
 @Entity
-@DiscriminatorValue("note")
+@Table(name = "note")
 class Note(
     private var title: String,
     private var updateAt: LocalDateTime,
     private var content: String,
-) : Content() {
+    space: Space
+) : Content(space = space) {
 
     override fun toDto(): NoteDto {
         return NoteDto(id ?: 0, title, updateAt, content)
@@ -23,5 +25,9 @@ class Note(
 
     fun setContent(newContent: String) {
         this.content = newContent
+    }
+
+    fun setUpdateAt(newUpdateAt: LocalDateTime) {
+        this.updateAt = newUpdateAt
     }
 }

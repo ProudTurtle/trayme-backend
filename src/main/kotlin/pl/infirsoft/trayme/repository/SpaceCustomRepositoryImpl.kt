@@ -1,34 +1,10 @@
 package pl.infirsoft.trayme.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import pl.infirsoft.trayme.domain.QSpace
-import pl.infirsoft.trayme.domain.Space
+import pl.infirsoft.trayme.domain.*
 import pl.infirsoft.trayme.exception.SpaceNotFoundException
 
 class SpaceCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : SpaceCustomRepository {
-
-    override fun getEntitiesBy(id: Int) {
-        val root = QSpace.space
-
-        val spaceType = queryFactory
-            .select(root.module)
-            .from(root)
-            .where(root.id.eq(id))
-            .fetchOne()
-
-//        val results = when (spaceType) {
-//            "notes" -> queryFactory
-//                .selectFrom(QNote.note)
-//                .fetch().map(Note::toDto)
-//
-//            "recommendations" -> queryFactory
-//                .selectFrom(QRecommendation.recommendation)
-//                .fetch().map(Recommendation::toDto)
-//
-//            else -> emptyList()
-//        }
-//        return results
-    }
 
     override fun requireBy(id: Int): Space {
         return findBy(id) ?: throw SpaceNotFoundException(id)
@@ -49,14 +25,14 @@ class SpaceCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : Spa
         return queryFactory.selectFrom(root).where(root.user.password.eq(userPassword)).fetch()
     }
 
-    override fun findByContentAndUserPassword(contentId: Int, userPassword: String): Space? {
+    override fun findByIdAndUserPassword(spaceId: Int, userPassword: String): Space? {
         val root = QSpace.space
 
         return queryFactory.selectFrom(root)
-            .where(root.content.id.eq(contentId).and(root.user.password.eq(userPassword))).fetchOne()
+            .where(root.user.password.eq(userPassword).and(root.id.eq(spaceId))).fetchOne()
     }
 
-    override fun requireByContentIdAnsUserPassword(contentId: Int, userPassword: String): Space {
-        return findByContentAndUserPassword(contentId, userPassword) ?: throw SpaceNotFoundException(contentId)
+    override fun requireByIdIdAnsUserPassword(spaceId: Int, userPassword: String): Space {
+        return findByIdAndUserPassword(spaceId, userPassword) ?: throw SpaceNotFoundException(spaceId)
     }
 }

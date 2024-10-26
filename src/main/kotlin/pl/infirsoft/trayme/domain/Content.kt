@@ -3,13 +3,15 @@ package pl.infirsoft.trayme.domain
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "content")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "content_type", discriminatorType = DiscriminatorType.STRING)
+@Inheritance(strategy = InheritanceType.JOINED)
 abstract class Content(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    open val id: Int? = null
+    open val id: Int? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "space_id")
+    open val space: Space
 ) {
     abstract fun toDto(): Any
 }
