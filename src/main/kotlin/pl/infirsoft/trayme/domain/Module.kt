@@ -16,4 +16,8 @@ class Module(
     fun toDto(): ModuleDto {
         return ModuleDto(id, module, title, icon)
     }
+
+    fun getModule(): String {
+        return module
+    }
 }

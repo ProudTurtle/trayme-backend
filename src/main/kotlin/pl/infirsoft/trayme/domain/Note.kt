@@ -1,6 +1,5 @@
 package pl.infirsoft.trayme.domain
 
-import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import pl.infirsoft.trayme.dto.NoteDto

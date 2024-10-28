@@ -21,7 +21,7 @@ class Space(
     val id: Int? = null
 
     fun toDto(): SpaceDto {
-        return SpaceDto(name, module.toDto())
+        return SpaceDto(id!!,name, module.getModule())
     }
 
     fun setName(newName: String) {

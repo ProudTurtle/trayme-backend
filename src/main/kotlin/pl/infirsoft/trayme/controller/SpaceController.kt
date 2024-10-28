@@ -3,10 +3,7 @@ package pl.infirsoft.trayme.controller
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.web.bind.annotation.*
 import pl.infirsoft.trayme.domain.Space
-import pl.infirsoft.trayme.dto.NoteDto
 import pl.infirsoft.trayme.dto.SpaceDto
-import pl.infirsoft.trayme.payload.NotePayload
-import pl.infirsoft.trayme.payload.NoteUpdatePayload
 import pl.infirsoft.trayme.payload.SpacePayload
 import pl.infirsoft.trayme.payload.SpaceUpdatePayload
 import pl.infirsoft.trayme.service.SpaceService

@@ -1,5 +1,4 @@
-package pl.infirsoft.trayme.dto;
-
+package pl.infirsoft.trayme.dto
 
 data class RecommendationDto(
     val name: String,
