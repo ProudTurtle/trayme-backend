@@ -5,6 +5,6 @@ import java.time.LocalDateTime
 data class NoteDto(
     val id: Int,
     val title: String,
-    val updateAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
     val content: String
 )

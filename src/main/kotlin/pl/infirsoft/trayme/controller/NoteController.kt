@@ -10,14 +10,15 @@ import pl.infirsoft.trayme.service.NoteService
 
 
 @RestController
-@RequestMapping("/notes")
+@RequestMapping("{spaceId}/notes")
 class NoteController(
     private val noteService: NoteService
 ) {
     @GetMapping
-    @Operation(summary = "Notatki.Lista", description = "Zwraca listę notatek dla danego userPassword")
-    fun getNotes(@RequestHeader("X-User-Token") userPassword: String): List<NoteDto> {
-        return noteService.getNotes(userPassword).map(Note::toDto)
+    @Operation(summary = "Notatki.Lista", description = "Zwraca listę notatek dla danego userPassword i spaceId")
+    fun getNotes(@RequestHeader("X-User-Token") userPassword: String,
+                 @PathVariable spaceId: Int): List<NoteDto> {
+        return noteService.getNotes(userPassword, spaceId).map(Note::toDto)
     }
 
     @PostMapping
@@ -29,7 +30,7 @@ class NoteController(
         return noteService.createNote(notePayload, userPassword).toDto()
     }
 
-    @PutMapping("{noteId}")
+    @PatchMapping("{noteId}")
     @Operation(summary = "Notatki.Aktualizacja", description = "Aktualizuje notatkę")
     fun updateNote(
         @RequestHeader("X-User-Token") userPassword: String,

@@ -9,13 +9,13 @@ import java.time.LocalDateTime
 @Table(name = "note")
 class Note(
     private var title: String,
-    private var updateAt: LocalDateTime,
+    private var updatedAt: LocalDateTime,
     private var content: String,
     space: Space
 ) : Content(space = space) {
 
     override fun toDto(): NoteDto {
-        return NoteDto(id ?: 0, title, updateAt, content)
+        return NoteDto(id ?: 0, title, updatedAt, content)
     }
 
     fun setTitle(newTitle: String) {
@@ -27,6 +27,6 @@ class Note(
     }
 
     fun setUpdateAt(newUpdateAt: LocalDateTime) {
-        this.updateAt = newUpdateAt
+        this.updatedAt = newUpdateAt
     }
 }

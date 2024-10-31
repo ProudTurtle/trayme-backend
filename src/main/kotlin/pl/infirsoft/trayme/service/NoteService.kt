@@ -26,8 +26,8 @@ class NoteService(
         }
     }
 
-    fun getNotes(userPassword: String): List<Note> {
-        return noteRepository.findNotesByUserPassword(userPassword)
+    fun getNotes(userPassword: String, spaceId: Int): List<Note> {
+        return noteRepository.findNotesByUserPasswordAndSpaceId(userPassword, spaceId)
     }
 
     fun updateNote(userPassword: String, payload: NoteUpdatePayload, noteId: Int): Note {

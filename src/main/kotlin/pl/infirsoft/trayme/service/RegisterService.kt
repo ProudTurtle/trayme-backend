@@ -32,7 +32,10 @@ class RegisterService(
         userRepository.save(user)
         val spacePayload = SpacePayload("Notatki", 1)
         val space = spaceService.createSpace(spacePayload, password)
-        val payload = NotePayload("Powitalna notatka", "Witaj w Trayme! :)", space.id!!)
+        val payload = NotePayload("Witaj w Trayme! \uD83D\uDC4B", "Hej! Jestem Twoją pierwszą notatką \uD83D\uDE0A\n" +
+                "Możesz mnie edytować lub po prostu usunąć \uD83D\uDDD1\uFE0F\n" +
+                "\n" +
+                "Miłego korzystania z aplikacji! \uD83D\uDE80", space.id!!)
         noteService.createNote(payload, password)
 
         return password

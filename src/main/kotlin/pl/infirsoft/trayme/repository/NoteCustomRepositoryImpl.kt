@@ -9,7 +9,7 @@ class NoteCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : Note
         return findNoteByUserPasswordAndNoteId(userPassword, id) ?: throw NoteNotFoundException(id)
     }
 
-    override fun findNotesByUserPassword(userPassword: String): List<Note> {
+    override fun findNotesByUserPasswordAndSpaceId(userPassword: String, spaceId: Int): List<Note> {
         val note = QNote.note
         val content = QContent.content
         val space = QSpace.space
@@ -21,7 +21,7 @@ class NoteCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : Note
             .join(content).on(note.id.eq(content.id))
             .join(space).on(space.id.eq(content.space.id))
             .join(user).on(user.id.eq(space.user.id))
-            .where(user.password.eq(userPassword))
+            .where(user.password.eq(userPassword).and(space.id.eq(spaceId)))
             .fetch()
     }
 
