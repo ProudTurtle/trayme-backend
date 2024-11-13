@@ -11,10 +11,11 @@ class Module(
     val id: Int,
     private val module: String,
     private val title: String,
-    private val icon: String
+    private val icon: String,
+    private val description: String
 ) {
     fun toDto(): ModuleDto {
-        return ModuleDto(id, module, title, icon)
+        return ModuleDto(id, module, title, icon, description)
     }
 
     fun getModule(): String {

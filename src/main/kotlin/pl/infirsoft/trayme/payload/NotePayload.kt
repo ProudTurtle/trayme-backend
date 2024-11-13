@@ -15,6 +15,6 @@ data class NotePayload(
 }
 
 data class NoteUpdatePayload(
-    val title: String,
-    val content: String
+    val title: String?,
+    val content: String?
 )

@@ -1,0 +1,1 @@
+ALTER TABLE module ADD description VARCHAR(255) NOT NULL

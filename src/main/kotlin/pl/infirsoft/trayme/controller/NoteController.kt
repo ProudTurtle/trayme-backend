@@ -30,7 +30,7 @@ class NoteController(
         return noteService.createNote(notePayload, userPassword).toDto()
     }
 
-    @PatchMapping("{noteId}")
+    @PutMapping("{noteId}")
     @Operation(summary = "Notatki.Aktualizacja", description = "Aktualizuje notatkę")
     fun updateNote(
         @RequestHeader("X-User-Token") userPassword: String,

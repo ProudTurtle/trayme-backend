@@ -33,8 +33,8 @@ class NoteService(
     fun updateNote(userPassword: String, payload: NoteUpdatePayload, noteId: Int): Note {
         val note = noteRepository.requireBy(userPassword, noteId)
 
-        payload.title.let { note.setTitle(it) }
-        payload.content.let { note.setContent(it) }
+        payload.title?.let { note.setTitle(it) }
+        payload.content?.let { note.setContent(it) }
         note.setUpdateAt(LocalDateTime.now())
         return noteRepository.save(note)
     }
