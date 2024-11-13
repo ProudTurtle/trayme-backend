@@ -16,10 +16,8 @@ CREATE TABLE module (
 CREATE TABLE space (
     id INT AUTO_INCREMENT PRIMARY KEY,
     module_id INT NOT NULL,
-    user_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
-    FOREIGN KEY (module_id) REFERENCES module(id),
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    FOREIGN KEY (module_id) REFERENCES module(id)
 );
 
 -- Tabela bazowa dla Content

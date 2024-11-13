@@ -11,6 +11,7 @@ class RecommendationCustomRepositoryImpl(private val queryFactory: JPAQueryFacto
         val content = QContent.content
         val space = QSpace.space
         val user = QUser.user
+        val userSpace = QUserSpace.userSpace
 
 
         return queryFactory
@@ -18,7 +19,7 @@ class RecommendationCustomRepositoryImpl(private val queryFactory: JPAQueryFacto
             .from(root)
             .join(content).on(root.id.eq(content.id))
             .join(space).on(space.id.eq(content.space.id))
-            .join(user).on(user.id.eq(space.user.id))
+            .join(userSpace).on(user.id.eq(userSpace.user.id))
             .where(user.password.eq(userPassword).and(root.id.eq(id)))
             .fetchFirst()
     }
@@ -32,13 +33,14 @@ class RecommendationCustomRepositoryImpl(private val queryFactory: JPAQueryFacto
         val content = QContent.content
         val space = QSpace.space
         val user = QUser.user
+        val userSpace = QUserSpace.userSpace
 
         return queryFactory
             .select(recommendation)
             .from(recommendation)
             .join(content).on(recommendation.id.eq(content.id))
             .join(space).on(space.id.eq(content.space.id))
-            .join(user).on(user.id.eq(space.user.id))
+            .join(userSpace).on(user.id.eq(userSpace.user.id))
             .where(user.password.eq(userPassword))
             .fetch()
     }

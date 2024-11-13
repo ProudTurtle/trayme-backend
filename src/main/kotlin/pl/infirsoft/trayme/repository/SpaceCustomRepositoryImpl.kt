@@ -21,15 +21,23 @@ class SpaceCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : Spa
 
     override fun findByUserPassword(userPassword: String): List<Space> {
         val root = QSpace.space
+        val user = QUser.user
+        val userSpace = QUserSpace.userSpace
 
-        return queryFactory.selectFrom(root).where(root.user.password.eq(userPassword)).fetch()
+        return queryFactory.select(root)
+            .from(root)
+            .join(userSpace).on(user.id.eq(userSpace.user.id))
+            .where(userSpace.user.password.eq(userPassword)).fetch()
     }
 
     override fun findByIdAndUserPassword(spaceId: Int, userPassword: String): Space? {
         val root = QSpace.space
+        val user = QUser.user
+        val userSpace = QUserSpace.userSpace
 
         return queryFactory.selectFrom(root)
-            .where(root.user.password.eq(userPassword).and(root.id.eq(spaceId))).fetchOne()
+            .join(userSpace).on(user.id.eq(userSpace.user.id))
+            .where(userSpace.user.password.eq(userPassword).and(root.id.eq(spaceId))).fetchOne()
     }
 
     override fun requireByIdIdAnsUserPassword(spaceId: Int, userPassword: String): Space {

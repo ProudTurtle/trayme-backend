@@ -1,4 +1,4 @@
-package pl.infirsoft.trayme.payload;
+package pl.infirsoft.trayme.payload
 
 import pl.infirsoft.trayme.domain.Module
 import pl.infirsoft.trayme.domain.Note
@@ -10,15 +10,15 @@ data class SpacePayload(
     val name: String,
     val moduleId: Int
 ) {
-    fun toEntity(user: User, module: Module): Space {
-        return Space(module, user, name)
+    fun toEntity(module: Module): Space {
+        return Space(module, name)
     }
 }
 
 data class SpaceUpdatePayload(
     val name: String
 ) {
-    fun toEntity(user: User, module: Module): Space {
-        return Space(module, user, name)
+    fun toEntity(module: Module): Space {
+        return Space(module, name)
     }
 }

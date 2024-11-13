@@ -9,9 +9,6 @@ class Space(
     @ManyToOne
     @JoinColumn(name = "module_id", nullable = false)
     private val module: Module,
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private val user: User,
     private var name: String,
     @OneToMany(mappedBy = "space", cascade = [CascadeType.REMOVE])
     val contents: List<Content> = mutableListOf()

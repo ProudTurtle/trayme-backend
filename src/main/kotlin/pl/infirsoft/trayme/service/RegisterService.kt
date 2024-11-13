@@ -27,7 +27,7 @@ class RegisterService(
             .map(charPool::get)
             .joinToString("")
 
-        val user = User(password);
+        val user = User(password)
 
         userRepository.save(user)
         val spacePayload = SpacePayload("Notatki", 1)

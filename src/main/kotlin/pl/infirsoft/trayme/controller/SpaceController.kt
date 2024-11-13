@@ -40,5 +40,8 @@ class SpaceController(
     fun updateNote(@RequestBody spacePayload: SpaceUpdatePayload, @PathVariable spacesId: Int): SpaceDto {
         return spaceService.updateSpace(spacePayload, spacesId).toDto()
     }
+//
+//    @PostMapping
+//    @Operation(summary = "Space. Dodawanie space od innego użytkownika", description = "Dodajemy do swojej przestrzeni space od innego użytkownika")
 
 }

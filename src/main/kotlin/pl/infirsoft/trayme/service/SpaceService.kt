@@ -1,19 +1,23 @@
 package pl.infirsoft.trayme.service
 
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import pl.infirsoft.trayme.domain.Space
+import pl.infirsoft.trayme.domain.UserSpace
 import pl.infirsoft.trayme.exception.SpaceNotFoundException
 import pl.infirsoft.trayme.payload.SpacePayload
 import pl.infirsoft.trayme.payload.SpaceUpdatePayload
 import pl.infirsoft.trayme.repository.ModuleRepository
 import pl.infirsoft.trayme.repository.SpaceRepository
 import pl.infirsoft.trayme.repository.UserRepository
+import pl.infirsoft.trayme.repository.UserSpaceRepository
 
 @Service
 class SpaceService(
     private val repository: SpaceRepository,
     private val userRepository: UserRepository,
-    private val moduleRepository: ModuleRepository
+    private val moduleRepository: ModuleRepository,
+    private val userSpaceRepository: UserSpaceRepository
 ) {
     fun getAllSpaces(userPassword: String): List<Space> {
         return repository.findByUserPassword(userPassword)
@@ -22,8 +26,11 @@ class SpaceService(
     fun createSpace(spacePayload: SpacePayload, userPassword: String): Space {
         val user = userRepository.requireBy(userPassword)
         val module = moduleRepository.requireBy(spacePayload.moduleId)
-        val space = Space(module, user, spacePayload.name)
-        return repository.save(space)
+        val space = Space(module, spacePayload.name)
+        repository.save(space)
+        val userSpace = UserSpace(user, space, "Test")
+        userSpaceRepository.save(userSpace)
+        return space
     }
 
     fun updateSpace(payload: SpaceUpdatePayload, spaceId: Int): Space {
