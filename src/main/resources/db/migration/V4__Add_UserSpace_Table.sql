@@ -6,3 +6,5 @@ CREATE TABLE user_space (
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (space_id) REFERENCES space(id)
 );
+
+ALTER TABLE space ADD COLUMN share_key VARCHAR(255) NOT NULL;

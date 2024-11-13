@@ -10,6 +10,7 @@ class Space(
     @JoinColumn(name = "module_id", nullable = false)
     private val module: Module,
     private var name: String,
+    private var shareKey: String,
     @OneToMany(mappedBy = "space", cascade = [CascadeType.REMOVE])
     val contents: List<Content> = mutableListOf()
 ) {
@@ -18,7 +19,7 @@ class Space(
     val id: Int? = null
 
     fun toDto(): SpaceDto {
-        return SpaceDto(id!!,name, module.getModule())
+        return SpaceDto(id!!, name, module.getModule(), shareKey)
     }
 
     fun setName(newName: String) {

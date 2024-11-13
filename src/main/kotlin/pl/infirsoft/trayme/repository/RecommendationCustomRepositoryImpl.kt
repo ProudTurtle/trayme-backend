@@ -19,7 +19,8 @@ class RecommendationCustomRepositoryImpl(private val queryFactory: JPAQueryFacto
             .from(root)
             .join(content).on(root.id.eq(content.id))
             .join(space).on(space.id.eq(content.space.id))
-            .join(userSpace).on(user.id.eq(userSpace.user.id))
+            .join(userSpace).on(userSpace.space.id.eq(space.id))
+            .join(user).on(user.id.eq(userSpace.user.id))
             .where(user.password.eq(userPassword).and(root.id.eq(id)))
             .fetchFirst()
     }
@@ -40,7 +41,8 @@ class RecommendationCustomRepositoryImpl(private val queryFactory: JPAQueryFacto
             .from(recommendation)
             .join(content).on(recommendation.id.eq(content.id))
             .join(space).on(space.id.eq(content.space.id))
-            .join(userSpace).on(user.id.eq(userSpace.user.id))
+            .join(userSpace).on(userSpace.space.id.eq(space.id))
+            .join(user).on(user.id.eq(userSpace.user.id))
             .where(user.password.eq(userPassword))
             .fetch()
     }

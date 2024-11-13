@@ -40,8 +40,14 @@ class SpaceController(
     fun updateNote(@RequestBody spacePayload: SpaceUpdatePayload, @PathVariable spacesId: Int): SpaceDto {
         return spaceService.updateSpace(spacePayload, spacesId).toDto()
     }
-//
-//    @PostMapping
-//    @Operation(summary = "Space. Dodawanie space od innego użytkownika", description = "Dodajemy do swojej przestrzeni space od innego użytkownika")
+
+    @PostMapping("share")
+    @Operation(summary = "Spaces.Sharowanie", description = "Udostępnia swojego space innemu użytkownikowi")
+    fun getNotes(
+        @RequestHeader("X-User-Token") userPassword: String,
+        @RequestParam shareKey: String
+    ): SpaceDto {
+        return spaceService.shareSpace(userPassword, shareKey).toDto()
+    }
 
 }

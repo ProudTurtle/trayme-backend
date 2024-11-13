@@ -39,7 +39,8 @@ class NoteCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : Note
             .from(note)
             .join(content).on(note.id.eq(content.id))
             .join(space).on(space.id.eq(content.space.id))
-            .join(userSpace).on(user.id.eq(userSpace.user.id))
+            .join(userSpace).on(userSpace.space.id.eq(space.id))
+            .join(user).on(user.id.eq(userSpace.user.id))
             .where(user.password.eq(userPassword).and(note.id.eq(noteId)))
             .fetchFirst()
     }

@@ -7,7 +7,7 @@ import pl.infirsoft.trayme.exception.SpaceNotFoundException
 class SpaceCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : SpaceCustomRepository {
 
     override fun requireBy(id: Int): Space {
-        return findBy(id) ?: throw SpaceNotFoundException(id)
+        return findBy(id) ?: throw SpaceNotFoundException(id = id)
     }
 
     override fun findBy(id: Int): Space? {
@@ -42,5 +42,15 @@ class SpaceCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : Spa
 
     override fun requireByIdIdAnsUserPassword(spaceId: Int, userPassword: String): Space {
         return findByIdAndUserPassword(spaceId, userPassword) ?: throw SpaceNotFoundException(spaceId)
+    }
+
+    override fun findByShareKey(shareKey: String): Space? {
+        val root = QSpace.space
+
+        return queryFactory.selectFrom(root).where(root.shareKey.eq(shareKey)).fetchFirst()
+    }
+
+    override fun requireByShareKey(shareKey: String): Space {
+        return findByShareKey(shareKey) ?: throw SpaceNotFoundException(shareKey = shareKey)
     }
 }
