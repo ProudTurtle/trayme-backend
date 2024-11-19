@@ -25,11 +25,11 @@ class SpaceService(
 ) {
     fun generateShareKey(spaceId: Int): ShareKeyDto {
         val space = repository.requireBy(spaceId)
-        val charPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#^&*()"
         val secureRandom = SecureRandom()
 
-        val password = CharArray(6) { charPool[secureRandom.nextInt(charPool.length)] }
-            .concatToString()
+        val password = (secureRandom.nextInt(900000) + 100000).toString()
+
+
         val expiredTime = LocalDateTime.now().plusMinutes(2)
         space.setShareKey(password)
         space.setShareKeyExpiredAt(expiredTime)

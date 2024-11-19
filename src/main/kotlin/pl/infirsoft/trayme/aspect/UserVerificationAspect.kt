@@ -11,7 +11,6 @@ class UserVerificationAspect(val userRepository: UserRepository) {
 
     @Before("@annotation(RequiresUser) && args(userPassword, ..)")
     fun verifyUser(userPassword: String) {
-        println("Aspect działa! Weryfikacja użytkownika...")
         userRepository.requireBy(userPassword)
     }
 }
