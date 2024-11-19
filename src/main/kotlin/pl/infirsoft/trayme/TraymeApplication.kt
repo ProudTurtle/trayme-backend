@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class TraymeApplication
 
 fun main(args: Array<String>) {
-	runApplication<TraymeApplication>(*args)
+    runApplication<TraymeApplication>(*args)
 }

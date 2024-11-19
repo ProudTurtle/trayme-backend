@@ -4,5 +4,5 @@ data class SpaceDto(
     val id: Int,
     val name: String,
     val module: String,
-    val shareKey: String
+    val shareKey: String?
 )

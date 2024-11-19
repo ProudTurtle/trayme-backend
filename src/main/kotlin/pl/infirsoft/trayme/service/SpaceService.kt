@@ -3,6 +3,8 @@ package pl.infirsoft.trayme.service
 import org.springframework.stereotype.Service
 import pl.infirsoft.trayme.domain.Space
 import pl.infirsoft.trayme.domain.UserSpace
+import pl.infirsoft.trayme.dto.ShareKeyDto
+import pl.infirsoft.trayme.exception.ShareKeyExpiredException
 import pl.infirsoft.trayme.exception.SpaceAlreadyAssignedException
 import pl.infirsoft.trayme.exception.SpaceNotFoundException
 import pl.infirsoft.trayme.payload.SpacePayload
@@ -12,6 +14,7 @@ import pl.infirsoft.trayme.repository.SpaceRepository
 import pl.infirsoft.trayme.repository.UserRepository
 import pl.infirsoft.trayme.repository.UserSpaceRepository
 import java.security.SecureRandom
+import java.time.LocalDateTime
 
 @Service
 class SpaceService(
@@ -20,16 +23,23 @@ class SpaceService(
     private val moduleRepository: ModuleRepository,
     private val userSpaceRepository: UserSpaceRepository
 ) {
-    fun generateShareKey(): String {
+    fun generateShareKey(spaceId: Int): ShareKeyDto {
+        val space = repository.requireBy(spaceId)
         val charPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#^&*()"
         val secureRandom = SecureRandom()
 
-        val password = (5..12)
-            .map { secureRandom.nextInt(charPool.length) }
-            .map(charPool::get)
-            .joinToString("")
+        val password = CharArray(6) { charPool[secureRandom.nextInt(charPool.length)] }
+            .concatToString()
+        val expiredTime = LocalDateTime.now().plusMinutes(2)
+        space.setShareKey(password)
+        space.setShareKeyExpiredAt(expiredTime)
+        repository.save(space)
+        return ShareKeyDto(password, expiredTime)
+    }
 
-        return password
+    fun getShareKey(spaceId: Int): ShareKeyDto {
+        val space = repository.requireBy(spaceId)
+        return ShareKeyDto(space.getShareKey(), space.getShareKeyExpiredAt())
     }
 
     fun getAllSpaces(userPassword: String): List<Space> {
@@ -39,14 +49,14 @@ class SpaceService(
     fun createSpace(spacePayload: SpacePayload, userPassword: String): Space {
         val user = userRepository.requireBy(userPassword)
         val module = moduleRepository.requireBy(spacePayload.moduleId)
-        val space = Space(module, spacePayload.name, generateShareKey())
+        val space = Space(module, spacePayload.name, null)
         repository.save(space)
         val userSpace = UserSpace(user, space, "Test")
         userSpaceRepository.save(userSpace)
         return space
     }
 
-    fun updateSpace(payload: SpaceUpdatePayload, spaceId: Int): Space {
+    fun updateSpace(payload: SpaceUpdatePayload, spaceId: Int, userPassword: String): Space {
         val space = repository.requireBy(spaceId)
 
         payload.name.let { space.setName(it) }
@@ -65,11 +75,19 @@ class SpaceService(
     fun shareSpace(userPassword: String, shareKey: String): Space {
         val user = userRepository.requireBy(userPassword)
         val space = repository.requireByShareKey(shareKey)
+
         if (userSpaceRepository.checkIfUserSpaceExist(user, space)) {
-            throw SpaceAlreadyAssignedException("Space jest już przypisany do konta")
+            throw SpaceAlreadyAssignedException()
         }
-        val userSpace = UserSpace(user, space, "Test")
-        userSpaceRepository.save(userSpace)
+
+        space.getShareKeyExpiredAt()?.let {
+            if (!it.isAfter(LocalDateTime.now())) {
+                throw ShareKeyExpiredException()
+            }
+        }
+
+        userSpaceRepository.save(UserSpace(user, space, "Test"))
         return space
     }
+
 }

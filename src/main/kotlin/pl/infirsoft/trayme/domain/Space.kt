@@ -2,6 +2,7 @@ package pl.infirsoft.trayme.domain
 
 import jakarta.persistence.*
 import pl.infirsoft.trayme.dto.SpaceDto
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "space")
@@ -10,7 +11,7 @@ class Space(
     @JoinColumn(name = "module_id", nullable = false)
     private val module: Module,
     private var name: String,
-    private var shareKey: String,
+    private var shareKey: String?,
     @OneToMany(mappedBy = "space", cascade = [CascadeType.REMOVE])
     val contents: List<Content> = mutableListOf()
 ) {
@@ -18,11 +19,29 @@ class Space(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null
 
+    private var shareKeyExpiredAt: LocalDateTime? = null
+
     fun toDto(): SpaceDto {
         return SpaceDto(id!!, name, module.getModule(), shareKey)
     }
 
     fun setName(newName: String) {
         this.name = newName
+    }
+
+    fun setShareKeyExpiredAt(expiredAt: LocalDateTime) {
+        this.shareKeyExpiredAt = expiredAt
+    }
+
+    fun setShareKey(shareKey: String) {
+        this.shareKey = shareKey
+    }
+
+    fun getShareKeyExpiredAt(): LocalDateTime? {
+        return shareKeyExpiredAt
+    }
+
+    fun getShareKey(): String? {
+        return shareKey
     }
 }

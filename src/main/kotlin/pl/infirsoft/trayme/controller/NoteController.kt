@@ -2,6 +2,7 @@ package pl.infirsoft.trayme.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.web.bind.annotation.*
+import pl.infirsoft.trayme.aspect.RequiresUser
 import pl.infirsoft.trayme.domain.Note
 import pl.infirsoft.trayme.dto.NoteDto
 import pl.infirsoft.trayme.payload.NotePayload
@@ -14,13 +15,17 @@ import pl.infirsoft.trayme.service.NoteService
 class NoteController(
     private val noteService: NoteService
 ) {
+    @RequiresUser
     @GetMapping
     @Operation(summary = "Notatki.Lista", description = "Zwraca listę notatek dla danego userPassword i spaceId")
-    fun getNotes(@RequestHeader("X-User-Token") userPassword: String,
-                 @PathVariable spaceId: Int): List<NoteDto> {
+    fun getNotes(
+        @RequestHeader("X-User-Token") userPassword: String,
+        @PathVariable spaceId: Int
+    ): List<NoteDto> {
         return noteService.getNotes(userPassword, spaceId).map(Note::toDto)
     }
 
+    @RequiresUser
     @PostMapping
     @Operation(summary = "Notatki.Tworzenie", description = "Tworzy nową notatkę")
     fun createNote(
