@@ -2,6 +2,7 @@ package pl.infirsoft.trayme.exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
@@ -11,8 +12,24 @@ import java.time.format.DateTimeFormatter
 @ControllerAdvice
 class GlobalExceptionHandler {
 
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationException(
+        ex: MethodArgumentNotValidException,
+        request: WebRequest
+    ): ResponseEntity<ErrorResponse> {
+        val errors = ex.bindingResult.fieldErrors.map { fieldError ->
+            "${fieldError.field}: ${fieldError.defaultMessage}"
+        }
+
+        val status = HttpStatus.BAD_REQUEST
+        val message = "Validation failed for fields: ${errors.joinToString(", ")}"
+        val timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+
+        return createErrorResponse(status, message, timestamp)
+    }
+
     @ExceptionHandler(Exception::class)
-    fun handleException(ex: Exception, request: WebRequest): ResponseEntity<ErrorResponse> {
+    fun handleGeneralException(ex: Exception, request: WebRequest): ResponseEntity<ErrorResponse> {
         val status = when (ex) {
             is NoteNotFoundException -> HttpStatus.NOT_FOUND
             is UserNotFoundException -> HttpStatus.UNAUTHORIZED
@@ -26,7 +43,6 @@ class GlobalExceptionHandler {
 
         val message = ex.message ?: "An error occurred"
         val timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
-
 
         return createErrorResponse(status, message, timestamp)
     }

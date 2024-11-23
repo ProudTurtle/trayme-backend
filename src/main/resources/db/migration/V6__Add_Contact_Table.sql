@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS  contact_messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(64) NOT NULL,
+    topic VARCHAR(64) NOT NULL,
+    message TEXT NOT NULL CHECK (LENGTH(message) <= 2048),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

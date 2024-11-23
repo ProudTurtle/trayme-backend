@@ -1,0 +1,3 @@
+package pl.infirsoft.trayme.repository
+
+interface ContactMessagesCustomRepository
