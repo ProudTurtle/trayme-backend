@@ -1,3 +1,4 @@
+ALTER TABLE space ADD COLUMN share_key VARCHAR(255) NOT NULL;
 -- Flyway migration to update missing descriptions in the module table
 UPDATE module
 SET description = CASE

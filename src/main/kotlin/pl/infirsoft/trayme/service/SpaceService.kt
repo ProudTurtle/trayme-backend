@@ -29,7 +29,6 @@ class SpaceService(
 
         val password = (secureRandom.nextInt(900000) + 100000).toString()
 
-
         val expiredTime = LocalDateTime.now().plusMinutes(2)
         space.setShareKey(password)
         space.setShareKeyExpiredAt(expiredTime)
