@@ -49,7 +49,6 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.springframework.boot:spring-boot-starter-validation:3.3.5")
 
-
     runtimeOnly("com.mysql:mysql-connector-j")
 }
 
@@ -58,7 +57,6 @@ kotlin {
         freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
-
 
 tasks.withType<Test> {
     useJUnitPlatform()
