@@ -15,7 +15,7 @@ class SecurityConfig {
         fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
             return http
                 .authorizeHttpRequests { registry ->
-                    registry.requestMatchers("/", "/contact", "/modules").permitAll()
+                    registry.requestMatchers("/", "/contact", "/modules", "swagger-ui/**", "v3/api-docs/**").permitAll()
                     registry.requestMatchers("/notes/**").permitAll()
                     registry.anyRequest().authenticated()
                 }
