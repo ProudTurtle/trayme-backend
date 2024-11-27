@@ -22,7 +22,7 @@ class SpaceCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : Spa
             .fetchOne()
     }
 
-    override fun findByUserPassword(userPassword: String): List<Space> {
+    override fun findByUserEmail(email: String): List<Space> {
         val root = QSpace.space
         val user = QUser.user
         val userSpace = QUserSpace.userSpace
@@ -31,12 +31,12 @@ class SpaceCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : Spa
             .from(root)
             .join(userSpace).on(userSpace.space.id.eq(root.id))
             .join(user).on(user.id.eq(userSpace.user.id))
-            .where(user.password.eq(userPassword))
+            .where(user.email.eq(email))
             .fetch()
     }
 
 
-    override fun findByIdAndUserPassword(spaceId: Int, userPassword: String): Space? {
+    override fun findByIdAndUserEmail(spaceId: Int, email: String): Space? {
         val root = QSpace.space
         val user = QUser.user
         val userSpace = QUserSpace.userSpace
@@ -45,14 +45,14 @@ class SpaceCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : Spa
             .join(userSpace).on(userSpace.space.id.eq(root.id))
             .join(user).on(user.id.eq(userSpace.user.id))
             .where(
-                user.password.eq(userPassword)
+                user.email.eq(email)
                     .and(root.id.eq(spaceId))
             )
             .fetchOne()
     }
 
-    override fun requireByIdIdAnsUserPassword(spaceId: Int, userPassword: String): Space {
-        return findByIdAndUserPassword(spaceId, userPassword) ?: throw SpaceNotFoundException(spaceId)
+    override fun requireByIdIdAnsUserEmail(spaceId: Int, email: String): Space {
+        return findByIdAndUserEmail(spaceId, email) ?: throw SpaceNotFoundException(spaceId)
     }
 
     override fun findByShareKey(shareKey: String): Space? {

@@ -5,7 +5,8 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "user")
 class User(
-    private val password: String
+    @Column(nullable = false, unique = true)
+    val email: String
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

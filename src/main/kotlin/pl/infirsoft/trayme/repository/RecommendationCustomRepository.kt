@@ -3,7 +3,7 @@ package pl.infirsoft.trayme.repository
 import pl.infirsoft.trayme.domain.Recommendation
 
 interface RecommendationCustomRepository {
-    fun requireBy(userPassword: String, id: Int): Recommendation
-    fun findBy(userPassword: String, id: Int): Recommendation?
-    fun findRecommendationByUserPassword(userPassword: String): List<Recommendation>
+    fun requireBy(email: String, id: Int): Recommendation
+    fun findBy(email: String, id: Int): Recommendation?
+    fun findRecommendationByUserEmail(email: String): List<Recommendation>
 }

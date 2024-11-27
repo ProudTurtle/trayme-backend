@@ -41,12 +41,12 @@ class SpaceService(
         return ShareKeyDto(space.getShareKey(), space.getShareKeyExpiredAt())
     }
 
-    fun getAllSpaces(userPassword: String): List<Space> {
-        return repository.findByUserPassword(userPassword)
+    fun getAllSpaces(email: String): List<Space> {
+        return repository.findByUserEmail(email)
     }
 
-    fun createSpace(spacePayload: SpacePayload, userPassword: String): Space {
-        val user = userRepository.requireBy(userPassword)
+    fun createSpace(spacePayload: SpacePayload, email: String): Space {
+        val user = userRepository.requireBy(email)
         val module = moduleRepository.requireBy(spacePayload.moduleId)
         val space = Space(module, spacePayload.name, null)
         repository.save(space)
@@ -55,24 +55,24 @@ class SpaceService(
         return space
     }
 
-    fun updateSpace(payload: SpaceUpdatePayload, spaceId: Int, userPassword: String): Space {
+    fun updateSpace(payload: SpaceUpdatePayload, spaceId: Int, email: String): Space {
         val space = repository.requireBy(spaceId)
 
         payload.name.let { space.setName(it) }
         return repository.save(space)
     }
 
-    fun deleteSpace(spaceId: Int, userPassword: String) {
+    fun deleteSpace(spaceId: Int, email: String) {
         try {
-            val space = repository.requireByIdIdAnsUserPassword(spaceId, userPassword)
+            val space = repository.requireByIdIdAnsUserEmail(spaceId, email)
             repository.delete(space)
         } catch (e: SpaceNotFoundException) {
             throw SpaceNotFoundException(spaceId)
         }
     }
 
-    fun shareSpace(userPassword: String, shareKey: String): Space {
-        val user = userRepository.requireBy(userPassword)
+    fun shareSpace(email: String, shareKey: String): Space {
+        val user = userRepository.requireBy(email)
         val space = repository.requireByShareKey(shareKey)
 
         if (userSpaceRepository.checkIfUserSpaceExist(user, space)) {

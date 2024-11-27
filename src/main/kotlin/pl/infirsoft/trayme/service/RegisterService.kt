@@ -6,7 +6,6 @@ import pl.infirsoft.trayme.domain.User
 import pl.infirsoft.trayme.payload.NotePayload
 import pl.infirsoft.trayme.payload.SpacePayload
 import pl.infirsoft.trayme.repository.UserRepository
-import java.security.SecureRandom
 
 @Service
 class RegisterService(
@@ -14,21 +13,15 @@ class RegisterService(
     private val noteService: NoteService,
     private val spaceService: SpaceService
 ) {
+
     @Transactional
-    fun generatePassword(): String {
-        val charPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&*()"
-        val secureRandom = SecureRandom()
+    fun createUser(email: String): String {
 
-        val password = (5..12)
-            .map { secureRandom.nextInt(charPool.length) }
-            .map(charPool::get)
-            .joinToString("")
-
-        val user = User(password)
-
+        val user = User(email)
         userRepository.save(user)
+
         val spacePayload = SpacePayload("Notes", 1)
-        val space = spaceService.createSpace(spacePayload, password)
+        val space = spaceService.createSpace(spacePayload, email)
         val payload = NotePayload(
             "Welcome to Trayme! 👋",
             "We're always glad to see a new user 😊\n" +
@@ -36,8 +29,17 @@ class RegisterService(
                     "\n" +
                     "Enjoy using the app!", space.id!!
         )
-        noteService.createNote(payload, password)
+        noteService.createNote(payload, email)
 
-        return password
+        return email
+    }
+
+    fun getOrCreateUser(email: String): User {
+        return userRepository.findByEmail(email)
+            ?: userRepository.save(
+                User(email).apply {
+
+                }
+            )
     }
 }

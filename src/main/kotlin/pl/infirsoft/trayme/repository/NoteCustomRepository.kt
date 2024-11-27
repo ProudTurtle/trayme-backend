@@ -3,7 +3,7 @@ package pl.infirsoft.trayme.repository
 import pl.infirsoft.trayme.domain.Note
 
 interface NoteCustomRepository {
-    fun requireBy(userPassword: String, id: Int): Note
-    fun findNotesByUserPasswordAndSpaceId(userPassword: String, spaceId: Int): List<Note>
-    fun findNoteByUserPasswordAndNoteId(userPassword: String, noteId: Int): Note?
+    fun requireBy(email: String, id: Int): Note
+    fun findNotesByUserEmailAndSpaceId(email: String, spaceId: Int): List<Note>
+    fun findNoteByUserEmailAndNoteId(email: String, noteId: Int): Note?
 }

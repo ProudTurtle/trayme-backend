@@ -15,9 +15,9 @@ class RecommendationService(
     private val spaceRepository: SpaceRepository
 ) {
 
-    fun createRecommendation(recommendationPayload: RecommendationPayload, userPassword: String): Recommendation {
+    fun createRecommendation(recommendationPayload: RecommendationPayload, email: String): Recommendation {
         return try {
-            val space = spaceRepository.requireByIdIdAnsUserPassword(recommendationPayload.spaceId, userPassword)
+            val space = spaceRepository.requireByIdIdAnsUserEmail(recommendationPayload.spaceId, email)
             val recommendation = recommendationRepository.save(recommendationPayload.toEntity(space))
             spaceRepository.save(space)
             recommendation
@@ -26,16 +26,16 @@ class RecommendationService(
         }
     }
 
-    fun getRecommendations(userPassword: String): List<Recommendation> {
-        return recommendationRepository.findRecommendationByUserPassword(userPassword)
+    fun getRecommendations(email: String): List<Recommendation> {
+        return recommendationRepository.findRecommendationByUserEmail(email)
     }
 
     fun updateRecommendation(
         payload: RecommendationUpdatePayload,
         recommendationId: Int,
-        userPassword: String
+        email: String
     ): Recommendation {
-        val recommendation = recommendationRepository.requireBy(userPassword, recommendationId)
+        val recommendation = recommendationRepository.requireBy(email, recommendationId)
 
         payload.name.let { recommendation.setName(it) }
         payload.who.let { recommendation.setWho(it) }
@@ -43,9 +43,9 @@ class RecommendationService(
         return recommendationRepository.save(recommendation)
     }
 
-    fun deleteRecommendation(recommendationId: Int, userPassword: String) {
+    fun deleteRecommendation(recommendationId: Int, email: String) {
         try {
-            val recommendation = recommendationRepository.requireBy(userPassword, recommendationId)
+            val recommendation = recommendationRepository.requireBy(email, recommendationId)
             recommendationRepository.delete(recommendation)
         } catch (e: SpaceNotFoundException) {
             throw NoteServiceException("Recommendation not found", e)

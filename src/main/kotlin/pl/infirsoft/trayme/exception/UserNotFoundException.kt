@@ -4,4 +4,4 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
-class UserNotFoundException(userPassword: String) : RuntimeException("User with id $userPassword not found")
+class UserNotFoundException(email: String) : RuntimeException("User with email $email not found")

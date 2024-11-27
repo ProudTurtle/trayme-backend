@@ -5,4 +5,6 @@ import org.springframework.stereotype.Repository
 import pl.infirsoft.trayme.domain.User
 
 @Repository
-interface UserRepository : JpaRepository<User, Int>, UserCustomRepository
+interface UserRepository : JpaRepository<User, Int>, UserCustomRepository {
+    fun findByEmail(email: String): User?
+}
