@@ -13,7 +13,9 @@ class Space(
     private var name: String,
     private var shareKey: String?,
     @OneToMany(mappedBy = "space", cascade = [CascadeType.REMOVE])
-    val contents: List<Content> = mutableListOf()
+    val contents: List<Content> = mutableListOf(),
+    @OneToMany(mappedBy = "space", cascade = [CascadeType.ALL])
+private val userSpaces: List<UserSpace> = mutableListOf()
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +23,9 @@ class Space(
 
     private var shareKeyExpiredAt: LocalDateTime? = null
 
-    fun toDto(): SpaceDto {
-        return SpaceDto(id!!, name, module.getModule(), shareKey)
+    fun toDto(user: User): SpaceDto {
+        val userRole = userSpaces.find { it.getUser() == user }?.getRole()
+        return SpaceDto(id!!, name, module.getModule(), shareKey, userRole)
     }
 
     fun setName(newName: String) {

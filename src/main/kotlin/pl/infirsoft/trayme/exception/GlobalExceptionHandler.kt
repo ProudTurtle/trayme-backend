@@ -32,12 +32,14 @@ class GlobalExceptionHandler {
     fun handleGeneralException(ex: Exception, request: WebRequest): ResponseEntity<ErrorResponse> {
         val status = when (ex) {
             is NoteNotFoundException -> HttpStatus.NOT_FOUND
+            is UserSpaceNotFoundException -> HttpStatus.NOT_FOUND
             is UserNotFoundException -> HttpStatus.UNAUTHORIZED
             is SpaceNotFoundException -> HttpStatus.NOT_FOUND
             is ModuleNotFoundException -> HttpStatus.NOT_FOUND
             is NoteServiceException -> HttpStatus.NOT_FOUND
             is SpaceAlreadyAssignedException -> HttpStatus.BAD_REQUEST
             is ShareKeyExpiredException -> HttpStatus.BAD_REQUEST
+            is NoPermissions -> HttpStatus.BAD_REQUEST
             else -> HttpStatus.INTERNAL_SERVER_ERROR
         }
 

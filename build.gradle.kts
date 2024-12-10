@@ -37,6 +37,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-mysql")
     implementation("com.querydsl:querydsl-jpa:5.1.0:jakarta")
+    implementation("org.mariadb.jdbc:mariadb-java-client:2.2.0")
     implementation("io.swagger.core.v3:swagger-annotations:2.2.+")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     kapt("com.querydsl:querydsl-apt:5.1.0:jakarta")

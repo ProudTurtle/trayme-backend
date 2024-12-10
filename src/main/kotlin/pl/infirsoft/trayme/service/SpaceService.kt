@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import pl.infirsoft.trayme.domain.Space
 import pl.infirsoft.trayme.domain.UserSpace
 import pl.infirsoft.trayme.dto.ShareKeyDto
+import pl.infirsoft.trayme.exception.NoPermissions
 import pl.infirsoft.trayme.exception.ShareKeyExpiredException
 import pl.infirsoft.trayme.exception.SpaceAlreadyAssignedException
 import pl.infirsoft.trayme.exception.SpaceNotFoundException
@@ -50,7 +51,7 @@ class SpaceService(
         val module = moduleRepository.requireBy(spacePayload.moduleId)
         val space = Space(module, spacePayload.name, null)
         repository.save(space)
-        val userSpace = UserSpace(user, space, "Test")
+        val userSpace = UserSpace(user, space, "Owner")
         userSpaceRepository.save(userSpace)
         return space
     }
@@ -63,12 +64,16 @@ class SpaceService(
     }
 
     fun deleteSpace(spaceId: Int, userPassword: String) {
-        try {
-            val space = repository.requireByIdIdAnsUserPassword(spaceId, userPassword)
-            repository.delete(space)
-        } catch (e: SpaceNotFoundException) {
-            throw SpaceNotFoundException(spaceId)
+        val space = repository.findByIdAndUserPassword(spaceId, userPassword)
+            ?: throw SpaceNotFoundException(spaceId)
+
+        val userSpace = userSpaceRepository.findBySpaceIdAndUserRole(userPassword, spaceId)
+            ?: throw NoPermissions()
+
+        if (userSpace.getRole() != "Owner") {
+            throw NoPermissions()
         }
+        repository.delete(space)
     }
 
     fun shareSpace(userPassword: String, shareKey: String): Space {
@@ -85,8 +90,7 @@ class SpaceService(
             }
         }
 
-        userSpaceRepository.save(UserSpace(user, space, "Test"))
+        userSpaceRepository.save(UserSpace(user, space, "Member"))
         return space
     }
-
 }

@@ -1,7 +1,6 @@
 package pl.infirsoft.trayme.domain
 
 import jakarta.persistence.*
-import pl.infirsoft.trayme.dto.SpaceDto
 
 @Entity
 @Table(name = "user_space")
@@ -17,4 +16,12 @@ class UserSpace(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null
+
+    fun getRole(): String {
+        return role
+    }
+
+    fun getUser(): User {
+        return user
+    }
 }

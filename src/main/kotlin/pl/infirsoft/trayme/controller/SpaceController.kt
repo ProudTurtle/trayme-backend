@@ -3,24 +3,26 @@ package pl.infirsoft.trayme.controller
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.web.bind.annotation.*
 import pl.infirsoft.trayme.aspect.RequiresUser
-import pl.infirsoft.trayme.domain.Space
 import pl.infirsoft.trayme.dto.ShareKeyDto
 import pl.infirsoft.trayme.dto.SpaceDto
 import pl.infirsoft.trayme.payload.SpacePayload
 import pl.infirsoft.trayme.payload.SpaceUpdatePayload
+import pl.infirsoft.trayme.repository.UserRepository
 import pl.infirsoft.trayme.service.SpaceService
 
 @RestController
 @RequestMapping("/spaces")
 class SpaceController(
-    private val spaceService: SpaceService
+    private val spaceService: SpaceService,
+    private val userRepository: UserRepository
 ) {
 
     @RequiresUser
     @GetMapping
     @Operation(summary = "Space. Lista", description = "Pobiera listę space dla użytkowników")
     fun index(@RequestHeader("X-User-Token") userPassword: String): List<SpaceDto> {
-        return spaceService.getAllSpaces(userPassword).map(Space::toDto)
+        val user = userRepository.requireBy(userPassword)
+        return spaceService.getAllSpaces(userPassword).map { it.toDto(user) }
     }
 
     @PostMapping
@@ -29,7 +31,8 @@ class SpaceController(
         @RequestHeader("X-User-Token") userPassword: String,
         @RequestBody spacePayload: SpacePayload
     ): SpaceDto {
-        return spaceService.createSpace(spacePayload, userPassword).toDto()
+        val user = userRepository.requireBy(userPassword)
+        return spaceService.createSpace(spacePayload, userPassword).toDto(user)
     }
 
     @DeleteMapping("{spacesId}")
@@ -46,7 +49,8 @@ class SpaceController(
         @RequestBody spacePayload: SpaceUpdatePayload,
         @PathVariable spacesId: Int,
     ): SpaceDto {
-        return spaceService.updateSpace(spacePayload, spacesId, userPassword).toDto()
+        val user = userRepository.requireBy(userPassword)
+        return spaceService.updateSpace(spacePayload, spacesId, userPassword).toDto(user)
     }
 
     @PostMapping("share")
@@ -55,7 +59,8 @@ class SpaceController(
         @RequestHeader("X-User-Token") userPassword: String,
         @RequestParam shareKey: String
     ): SpaceDto {
-        return spaceService.shareSpace(userPassword, shareKey).toDto()
+        val user = userRepository.requireBy(userPassword)
+        return spaceService.shareSpace(userPassword, shareKey).toDto(user)
     }
 
     @RequiresUser
