@@ -82,4 +82,13 @@ class SpaceController(
     ): ShareKeyDto {
         return spaceService.getShareKey(spacesId)
     }
+
+    @DeleteMapping("{spacesId}/leave-space")
+    @Operation(summary = "Spaces. Opuszczanie", description = "Opuszczanie spaces jako member. Nie usuwa spaces")
+    fun leaveSpace(
+        @RequestHeader("X-User-Token") userPassword: String,
+        @PathVariable spacesId: Int
+    ) {
+        spaceService.leaveSpace(userPassword, spacesId)
+    }
 }
