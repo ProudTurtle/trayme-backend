@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import pl.infirsoft.trayme.domain.Space
 import pl.infirsoft.trayme.domain.UserSpace
 import pl.infirsoft.trayme.dto.ShareKeyDto
+import pl.infirsoft.trayme.dto.SpaceDto
 import pl.infirsoft.trayme.exception.*
 import pl.infirsoft.trayme.payload.SpacePayload
 import pl.infirsoft.trayme.payload.SpaceUpdatePayload
@@ -43,14 +44,14 @@ class SpaceService(
         return repository.findByUserPassword(userPassword)
     }
 
-    fun createSpace(spacePayload: SpacePayload, userPassword: String): Space {
+    fun createSpace(spacePayload: SpacePayload, userPassword: String): SpaceDto {
         val user = userRepository.requireBy(userPassword)
         val module = moduleRepository.requireBy(spacePayload.moduleId)
         val space = Space(module, spacePayload.name, null)
         repository.save(space)
         val userSpace = UserSpace(user, space, "Owner")
         userSpaceRepository.save(userSpace)
-        return space
+        return SpaceDto(space.id!!, space.getName(), space.module.getModule(), userSpace.getRole())
     }
 
     fun updateSpace(payload: SpaceUpdatePayload, spaceId: Int, userPassword: String): Space {

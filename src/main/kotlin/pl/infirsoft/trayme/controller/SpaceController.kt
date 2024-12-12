@@ -32,7 +32,7 @@ class SpaceController(
         @RequestBody spacePayload: SpacePayload
     ): SpaceDto {
         val user = userRepository.requireBy(userPassword)
-        return spaceService.createSpace(spacePayload, userPassword).toDto(user)
+        return spaceService.createSpace(spacePayload, userPassword)
     }
 
     @DeleteMapping("{spacesId}")

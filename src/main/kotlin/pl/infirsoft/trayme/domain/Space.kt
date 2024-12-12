@@ -9,13 +9,13 @@ import java.time.LocalDateTime
 class Space(
     @ManyToOne
     @JoinColumn(name = "module_id", nullable = false)
-    private val module: Module,
+    val module: Module,
     private var name: String,
     private var shareKey: String?,
     @OneToMany(mappedBy = "space", cascade = [CascadeType.REMOVE])
     val contents: List<Content> = mutableListOf(),
     @OneToMany(mappedBy = "space", cascade = [CascadeType.ALL])
-private val userSpaces: List<UserSpace> = mutableListOf()
+    private val userSpaces: List<UserSpace> = mutableListOf()
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +25,15 @@ private val userSpaces: List<UserSpace> = mutableListOf()
 
     fun toDto(user: User): SpaceDto {
         val userRole = userSpaces.find { it.getUser() == user }?.getRole()
-        return SpaceDto(id!!, name, module.getModule(), shareKey, userRole)
+        return SpaceDto(id!!, name, module.getModule(), userRole)
     }
 
     fun setName(newName: String) {
         this.name = newName
+    }
+
+    fun getName(): String {
+        return name
     }
 
     fun setShareKeyExpiredAt(expiredAt: LocalDateTime) {
