@@ -3,6 +3,7 @@ package pl.infirsoft.trayme.service
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import pl.infirsoft.trayme.domain.User
+import pl.infirsoft.trayme.exception.UserNotFoundException
 import pl.infirsoft.trayme.payload.NotePayload
 import pl.infirsoft.trayme.payload.SpacePayload
 import pl.infirsoft.trayme.repository.UserRepository
@@ -15,7 +16,15 @@ class RegisterService(
     private val spaceService: SpaceService
 ) {
     @Transactional
-    fun generatePassword(): String {
+    fun generatePassword(userPassword: String?): String {
+        val existingUser = userPassword?.let {
+            runCatching { userRepository.requireBy(it) }.getOrNull()
+        }
+
+        if (existingUser != null) {
+            return existingUser.getPassword()
+        }
+
         val charPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&*()"
         val secureRandom = SecureRandom()
 
@@ -34,7 +43,7 @@ class RegisterService(
             "We're always glad to see a new user 😊\n" +
                     "Go ahead, explore features and optimize your life 🚀\n" +
                     "\n" +
-                    "Enjoy using the app!", space.id!!
+                    "Enjoy using the app!", space.id
         )
         noteService.createNote(payload, password)
 

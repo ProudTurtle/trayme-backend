@@ -10,4 +10,8 @@ class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int = 0
+
+    fun getPassword(): String {
+        return password
+    }
 }
