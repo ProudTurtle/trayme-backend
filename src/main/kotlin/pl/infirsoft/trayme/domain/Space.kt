@@ -1,5 +1,6 @@
 package pl.infirsoft.trayme.domain
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.*
 import pl.infirsoft.trayme.dto.SpaceDto
 import java.time.LocalDateTime
@@ -13,6 +14,7 @@ class Space(
     private var name: String,
     private var shareKey: String?,
     @OneToMany(mappedBy = "space", cascade = [CascadeType.REMOVE])
+    @JsonManagedReference
     val contents: List<Content> = mutableListOf(),
     @OneToMany(mappedBy = "space", cascade = [CascadeType.ALL])
     private val userSpaces: List<UserSpace> = mutableListOf()

@@ -1,5 +1,6 @@
 package pl.infirsoft.trayme.domain
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.*
 
 @Entity
@@ -11,6 +12,7 @@ abstract class Content(
 
     @ManyToOne
     @JoinColumn(name = "space_id")
+    @JsonBackReference
     open val space: Space
 ) {
     abstract fun toDto(): Any
