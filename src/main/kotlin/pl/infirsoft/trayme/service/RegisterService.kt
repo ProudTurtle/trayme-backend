@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import pl.infirsoft.trayme.domain.User
 import pl.infirsoft.trayme.dto.RegisterDto
-import pl.infirsoft.trayme.exception.UserNotFoundException
 import pl.infirsoft.trayme.payload.NotePayload
 import pl.infirsoft.trayme.payload.SpacePayload
 import pl.infirsoft.trayme.repository.UserRepository
@@ -24,7 +23,8 @@ class RegisterService(
 
         if (existingUser != null) {
             val spaces = spaceService.getAllSpaces(existingUser.getPassword())
-            return RegisterDto(existingUser.getPassword(), "Guest", null, null, spaces)
+            val spacesDTO = spaces.map { it.toDto(existingUser) }
+            return RegisterDto(existingUser.getPassword(), "Guest", null, null, spacesDTO)
         }
 
         val charPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&*()"
@@ -49,7 +49,8 @@ class RegisterService(
         )
         noteService.createNote(payload, password)
         val spaces = spaceService.getAllSpaces(password)
-
-        return RegisterDto(password, "Guest", null, null, spaces)
+        spaces.forEach { spaceService.refreshSpace(it) }
+        val spacesDTO = spaces.map { it.toDto(user) }
+        return RegisterDto(password, "Guest", null, null, spacesDTO)
     }
 }

@@ -1,5 +1,6 @@
 package pl.infirsoft.trayme.service
 
+import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Service
 import pl.infirsoft.trayme.domain.Space
 import pl.infirsoft.trayme.domain.UserSpace
@@ -20,8 +21,13 @@ class SpaceService(
     private val repository: SpaceRepository,
     private val userRepository: UserRepository,
     private val moduleRepository: ModuleRepository,
-    private val userSpaceRepository: UserSpaceRepository
+    private val userSpaceRepository: UserSpaceRepository,
+    private val entityManager: EntityManager
 ) {
+    fun refreshSpace(space: Space) {
+        entityManager.refresh(space)
+    }
+
     fun generateShareKey(spaceId: Int): ShareKeyDto {
         val space = repository.requireBy(spaceId)
         val secureRandom = SecureRandom()
