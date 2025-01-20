@@ -12,7 +12,7 @@ import pl.infirsoft.trayme.service.RegisterService
 class RegisterController(private val registerService: RegisterService) {
 
     @PostMapping
-    fun createNote(
+    fun createUser(
         @RequestHeader("X-User-Token", required = false) userPassword: String?
     ): RegisterDto {
         return registerService.generatePassword(userPassword)

@@ -14,4 +14,8 @@ class User(
     fun getPassword(): String {
         return password
     }
+
+    var email: String = ""
+    var name: String = ""
+    var avatarUrl: String = ""
 }

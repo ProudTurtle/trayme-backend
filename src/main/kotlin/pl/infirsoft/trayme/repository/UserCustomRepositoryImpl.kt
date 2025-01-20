@@ -19,4 +19,13 @@ class UserCustomRepositoryImpl(private val queryFactory: JPAQueryFactory) : User
             .where(root.password.eq(userPassword))
             .fetchOne()
     }
+
+    override fun findByEmail(userEmail: String): User? {
+        val root = QUser.user
+
+        return queryFactory
+            .selectFrom(root)
+            .where(root.email.eq(userEmail))
+            .fetchOne()
+    }
 }
