@@ -31,7 +31,13 @@ class RegisterService(
         if (existingUser != null) {
             val spaces = spaceService.getAllSpaces(existingUser.getPassword())
             val spacesDTO = spaces.map { it.toDto(existingUser) }
-            return RegisterDto(existingUser.getPassword(), "Guest", null, null, spacesDTO)
+            return RegisterDto(
+                existingUser.getPassword(),
+                existingUser.name,
+                existingUser.email,
+                existingUser.avatarUrl,
+                spacesDTO
+            )
         }
 
         val charPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&*()"
@@ -58,7 +64,7 @@ class RegisterService(
         val spaces = spaceService.getAllSpaces(password)
         spaces.forEach { spaceService.refreshSpace(it) }
         val spacesDTO = spaces.map { it.toDto(user) }
-        return RegisterDto(password, "Guest", null, null, spacesDTO)
+        return RegisterDto(password, user.name, user.email, user.avatarUrl, spacesDTO)
     }
 
     fun registerUserFromGoogle(userPassword: String, code: String): RegisterDto {

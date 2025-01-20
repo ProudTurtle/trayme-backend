@@ -8,8 +8,8 @@ import pl.infirsoft.trayme.dto.RegisterDto
 import pl.infirsoft.trayme.service.RegisterService
 
 @RestController
-@RequestMapping("/register")
-class RegisterController(private val registerService: RegisterService) {
+@RequestMapping("/init")
+class InitController(private val registerService: RegisterService) {
 
     @PostMapping
     fun createUser(

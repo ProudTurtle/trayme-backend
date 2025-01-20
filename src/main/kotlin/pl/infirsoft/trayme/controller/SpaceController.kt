@@ -20,7 +20,7 @@ class SpaceController(
     @RequiresUser
     @GetMapping
     @Operation(summary = "Space. Lista", description = "Pobiera listę space dla użytkowników")
-    fun index(@RequestHeader("X-User-Token") userPassword: String, @RequestHeader("google-auth") googleAuth: String): List<SpaceDto> {
+    fun index(@RequestHeader("X-User-Token") userPassword: String): List<SpaceDto> {
         val user = userRepository.requireBy(userPassword)
         return spaceService.getAllSpaces(userPassword).map { it.toDto(user) }
     }
