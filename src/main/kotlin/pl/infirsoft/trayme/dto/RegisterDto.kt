@@ -5,5 +5,6 @@ data class RegisterDto(
     val name: String?,
     val email: String?,
     val avatarUrl: String?,
-    val spaces: List<SpaceDto>
+    val spaces: List<SpaceDto>,
+    val modules: List<ModuleDto>
 )

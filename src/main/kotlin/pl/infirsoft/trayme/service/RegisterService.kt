@@ -10,6 +10,7 @@ import pl.infirsoft.trayme.domain.User
 import pl.infirsoft.trayme.dto.RegisterDto
 import pl.infirsoft.trayme.payload.NotePayload
 import pl.infirsoft.trayme.payload.SpacePayload
+import pl.infirsoft.trayme.repository.ModuleRepository
 import pl.infirsoft.trayme.repository.UserRepository
 import java.security.SecureRandom
 
@@ -18,6 +19,7 @@ class RegisterService(
     private val userRepository: UserRepository,
     private val noteService: NoteService,
     private val spaceService: SpaceService,
+    private val moduleService: ModuleService,
     @Value("\${google.oauth.client-id}") private val clientId: String,
     @Value("\${google.oauth.client-secret}") private val clientSecret: String,
     @Value("\${google.oauth.redirect-uri}") private val redirectUri: String
@@ -27,7 +29,7 @@ class RegisterService(
         val existingUser = userPassword?.let {
             runCatching { userRepository.requireBy(it) }.getOrNull()
         }
-
+        val modules = moduleService.getAllModules()
         if (existingUser != null) {
             val spaces = spaceService.getAllSpaces(existingUser.getPassword())
             val spacesDTO = spaces.map { it.toDto(existingUser) }
@@ -36,7 +38,8 @@ class RegisterService(
                 existingUser.name,
                 existingUser.email,
                 existingUser.avatarUrl,
-                spacesDTO
+                spacesDTO,
+                modules.map { it.toDto() }
             )
         }
 
@@ -64,13 +67,13 @@ class RegisterService(
         val spaces = spaceService.getAllSpaces(password)
         spaces.forEach { spaceService.refreshSpace(it) }
         val spacesDTO = spaces.map { it.toDto(user) }
-        return RegisterDto(password, user.name, user.email, user.avatarUrl, spacesDTO)
+        return RegisterDto(password, user.name, user.email, user.avatarUrl, spacesDTO, modules.map { it.toDto() })
     }
 
     fun registerUserFromGoogle(userPassword: String, code: String): RegisterDto {
         val accessToken = exchangeAuthorizationCodeForToken(code)
         val userInfo = getUserInfoFromToken(accessToken)
-
+        val modules = moduleService.getAllModules()
         val existingUser = userRepository.findByEmail(userInfo.email)
         val user = existingUser ?: userRepository.requireBy(userPassword).apply {
             name = userInfo.name
@@ -90,7 +93,8 @@ class RegisterService(
             user.name,
             user.email,
             user.avatarUrl,
-            spacesDTO
+            spacesDTO,
+            modules.map { it.toDto() }
         )
     }
 
