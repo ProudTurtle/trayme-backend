@@ -10,7 +10,6 @@ class Space(
     @ManyToOne
     @JoinColumn(name = "module_id", nullable = false)
     val module: Module,
-    private var name: String,
     private var shareKey: String?,
     @OneToMany(mappedBy = "space", cascade = [CascadeType.REMOVE])
     val contents: List<Content> = mutableListOf(),
@@ -25,15 +24,8 @@ class Space(
 
     fun toDto(user: User): SpaceDto {
         val userRole = userSpaces.find { it.getUser() == user }?.getRole()
+        val name = userSpaces.find { it.getUser() == user }?.getName()
         return SpaceDto(id!!, name, module.getModule(), userRole)
-    }
-
-    fun setName(newName: String) {
-        this.name = newName
-    }
-
-    fun getName(): String {
-        return name
     }
 
     fun setShareKeyExpiredAt(expiredAt: LocalDateTime) {

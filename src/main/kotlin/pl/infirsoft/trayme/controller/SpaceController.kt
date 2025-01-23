@@ -49,8 +49,7 @@ class SpaceController(
         @RequestBody spacePayload: SpaceUpdatePayload,
         @PathVariable spacesId: Int,
     ): SpaceDto {
-        val user = userRepository.requireBy(userPassword)
-        return spaceService.updateSpace(spacePayload, spacesId, userPassword).toDto(user)
+        return spaceService.updateSpace(spacePayload, spacesId, userPassword)
     }
 
     @PostMapping("share")

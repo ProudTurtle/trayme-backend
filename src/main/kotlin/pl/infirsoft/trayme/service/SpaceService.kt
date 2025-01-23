@@ -53,18 +53,20 @@ class SpaceService(
     fun createSpace(spacePayload: SpacePayload, userPassword: String): SpaceDto {
         val user = userRepository.requireBy(userPassword)
         val module = moduleRepository.requireBy(spacePayload.moduleId)
-        val space = Space(module, spacePayload.name, null)
+        val space = Space(module, null)
         repository.save(space)
-        val userSpace = UserSpace(user, space, "Owner")
+        val userSpace = UserSpace(user, space, "Owner", spacePayload.name)
         userSpaceRepository.save(userSpace)
-        return SpaceDto(space.id!!, space.getName(), space.module.getModule(), userSpace.getRole())
+        return SpaceDto(space.id!!, userSpace.getName(), space.module.getModule(), userSpace.getRole())
     }
 
-    fun updateSpace(payload: SpaceUpdatePayload, spaceId: Int, userPassword: String): Space {
-        val space = repository.requireBy(spaceId)
-
-        payload.name.let { space.setName(it) }
-        return repository.save(space)
+    fun updateSpace(payload: SpaceUpdatePayload, spaceId: Int, userPassword: String): SpaceDto {
+        val user = userRepository.requireBy(userPassword)
+        val userSpace = userSpaceRepository.requireBySpaceIdAndUserRole(userPassword, spaceId)
+        val space = repository.requireByIdIdAnsUserPassword(spaceId, userPassword)
+        payload.name.let { userSpace.setName(it) }
+        userSpaceRepository.save(userSpace)
+        return space.toDto(user)
     }
 
     fun deleteSpace(spaceId: Int, userPassword: String) {
@@ -93,6 +95,7 @@ class SpaceService(
     fun shareSpace(userPassword: String, shareKey: String): Space {
         val user = userRepository.requireBy(userPassword)
         val space = repository.requireByShareKey(shareKey)
+        val userSpace = userSpaceRepository.requireBySpaceIdAndUserRole(userPassword, space.id!!)
 
         if (userSpaceRepository.checkIfUserSpaceExist(user, space)) {
             throw SpaceAlreadyAssignedException()
@@ -104,7 +107,7 @@ class SpaceService(
             }
         }
 
-        userSpaceRepository.save(UserSpace(user, space, "Member"))
+        userSpaceRepository.save(UserSpace(user, space, "Member", userSpace.getName()))
         return space
     }
 }

@@ -11,7 +11,8 @@ class UserSpace(
     @ManyToOne
     @JoinColumn(name = "space_id", nullable = false)
     private val space: Space,
-    private val role: String
+    private val role: String,
+    private var name: String
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,5 +24,13 @@ class UserSpace(
 
     fun getUser(): User {
         return user
+    }
+
+    fun setName(name: String) {
+        this.name = name
+    }
+
+    fun getName(): String {
+        return name
     }
 }

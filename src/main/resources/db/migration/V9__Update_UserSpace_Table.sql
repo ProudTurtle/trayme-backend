@@ -1,0 +1,5 @@
+ALTER TABLE user_space
+ADD COLUMN name VARCHAR(255);
+
+ALTER TABLE space
+DROP COLUMN name
