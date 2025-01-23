@@ -1,6 +1,7 @@
 package pl.infirsoft.trayme.service
 
 import jakarta.persistence.EntityManager
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import pl.infirsoft.trayme.domain.Space
 import pl.infirsoft.trayme.domain.UserSpace
@@ -92,11 +93,10 @@ class SpaceService(
         userSpaceRepository.delete(userSpace)
     }
 
+    @Transactional
     fun shareSpace(userPassword: String, shareKey: String): Space {
         val user = userRepository.requireBy(userPassword)
         val space = repository.requireByShareKey(shareKey)
-        val userSpace = userSpaceRepository.requireBySpaceIdAndUserRole(userPassword, space.id!!)
-
         if (userSpaceRepository.checkIfUserSpaceExist(user, space)) {
             throw SpaceAlreadyAssignedException()
         }
@@ -107,7 +107,8 @@ class SpaceService(
             }
         }
 
-        userSpaceRepository.save(UserSpace(user, space, "Member", userSpace.getName()))
+        userSpaceRepository.save(UserSpace(user, space, "Member", space.getName()!!))
+        entityManager.refresh(space)
         return space
     }
 }

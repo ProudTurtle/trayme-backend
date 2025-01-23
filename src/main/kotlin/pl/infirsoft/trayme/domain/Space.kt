@@ -18,14 +18,18 @@ class Space(
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int? = null
+    val id: Int = 0
 
     private var shareKeyExpiredAt: LocalDateTime? = null
 
     fun toDto(user: User): SpaceDto {
         val userRole = userSpaces.find { it.getUser() == user }?.getRole()
         val name = userSpaces.find { it.getUser() == user }?.getName()
-        return SpaceDto(id!!, name, module.getModule(), userRole)
+        return SpaceDto(id, name, module.getModule(), userRole)
+    }
+
+    fun getName(): String? {
+        return userSpaces.find { it.getRole() == "Owner" }?.getName()
     }
 
     fun setShareKeyExpiredAt(expiredAt: LocalDateTime) {
